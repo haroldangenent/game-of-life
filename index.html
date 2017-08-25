@@ -1,0 +1,87 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body {
+    margin: 0;
+  }
+</style>
+
+<canvas></canvas>
+
+<script>
+const viewport = {
+  height: window.innerHeight,
+  width: window.innerWidth,
+}
+const canvas = document.querySelector('canvas')
+canvas.setAttribute('height', viewport.height);
+canvas.setAttribute('width', viewport.width);
+
+const context = canvas.getContext('2d')
+
+const cellSize = 30;
+
+let state = (() => {
+  const totalRows = viewport.height / cellSize
+  const perRow = viewport.width / cellSize
+  const state = []
+
+  for (let r = 0; r < totalRows; r++) {
+    const row = []
+
+    for (let i = 0; i < perRow; i++) {
+      row.push({ active: (Math.floor(Math.random() * 3) === 1) })
+    }
+
+    state.push(row)
+  }
+
+  return state
+})()
+
+const render = () => {
+  state.forEach((row, rowIndex) => {
+    row.forEach((cell, cellIndex) => {
+      context.fillStyle = cell.active ? 'salmon' : 'papayawhip'
+      context.fillRect(cellIndex * cellSize, rowIndex * cellSize, cellSize, cellSize)
+    })
+  })
+}
+
+render()
+
+const nextGeneration = () => {
+  const newState = []
+
+  state.forEach((row, rowIndex) => {
+    const newRow = []
+
+    row.forEach((cell, cellIndex) => {
+      const lastRow = state[rowIndex - 1] || state[state.length - 1]
+      const nextRow = state[rowIndex + 1] || state[0]
+
+      const aliveNeighbors = [
+        lastRow[cellIndex - 1] || lastRow[lastRow.length - 1],
+        lastRow[cellIndex],
+        lastRow[cellIndex + 1] || lastRow[0],
+        row[cellIndex - 1] || row[row.length - 1],
+        row[cellIndex + 1] || row[0],
+        nextRow[cellIndex - 1] || nextRow[nextRow.length - 1],
+        nextRow[cellIndex],
+        nextRow[cellIndex + 1] || nextRow[0],
+      ].filter(cell => cell.active)
+
+      newRow.push({ active: (aliveNeighbors.length === 3) })
+    })
+
+    newState.push(newRow)
+  })
+
+  return newState
+}
+
+setInterval(() => {
+  state = nextGeneration()
+  render()
+}, 200)
+</script>
