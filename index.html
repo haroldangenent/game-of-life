@@ -19,7 +19,7 @@ canvas.setAttribute('width', viewport.width);
 
 const context = canvas.getContext('2d')
 
-const cellSize = 20;
+const cellSize = 10;
 
 let state = (() => {
   const totalRows = viewport.height / cellSize
@@ -91,5 +91,5 @@ const nextGeneration = () => {
 setInterval(() => {
   state = nextGeneration()
   render()
-}, (1000 / 60))
+}, (1000 / 24))
 </script>
