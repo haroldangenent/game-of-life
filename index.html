@@ -19,7 +19,7 @@ canvas.setAttribute('width', viewport.width);
 
 const context = canvas.getContext('2d')
 
-const cellSize = 30;
+const cellSize = 20;
 
 let state = (() => {
   const totalRows = viewport.height / cellSize
@@ -50,6 +50,14 @@ const render = () => {
 
 render()
 
+const isAlive = (cell, aliveNeighbors) => {
+  if (cell.active) {
+    return (aliveNeighbors.length === 2 || aliveNeighbors.length === 3)
+  }
+
+  return (aliveNeighbors.length === 3)
+}
+
 const nextGeneration = () => {
   const newState = []
 
@@ -71,7 +79,7 @@ const nextGeneration = () => {
         nextRow[cellIndex + 1] || nextRow[0],
       ].filter(cell => cell.active)
 
-      newRow.push({ active: (aliveNeighbors.length === 3) })
+      newRow.push({ active: isAlive(cell, aliveNeighbors) })
     })
 
     newState.push(newRow)
@@ -83,5 +91,5 @@ const nextGeneration = () => {
 setInterval(() => {
   state = nextGeneration()
   render()
-}, 200)
+}, (1000 / 60))
 </script>
