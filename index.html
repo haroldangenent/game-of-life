@@ -9,6 +9,10 @@
 <canvas></canvas>
 
 <script>
+const colors = {
+  active: 'salmon',
+  inactive: 'papayawhip',
+}
 const viewport = {
   height: window.innerHeight,
   width: window.innerWidth,
@@ -42,7 +46,7 @@ let state = (() => {
 const render = () => {
   state.forEach((row, rowIndex) => {
     row.forEach((cell, cellIndex) => {
-      context.fillStyle = cell.active ? 'salmon' : 'papayawhip'
+      context.fillStyle = cell.active ? colors.active : colors.inactive
       context.fillRect(cellIndex * cellSize, rowIndex * cellSize, cellSize, cellSize)
     })
   })
